@@ -5,5 +5,4 @@
     - name: Levantar Nginx con Docker Compose
       command: docker-compose up -d
       args:
-        chdir: "{{ playbook_dir }}"
-        
+        chdir: "{{ playbook_dir }}/../docker"

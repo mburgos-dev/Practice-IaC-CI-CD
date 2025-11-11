@@ -17,6 +17,11 @@ resource "local_file" "web_content" {
 
 # Ejecuta Ansible después
 resource "null_resource" "run_ansible" {
+  triggers = {
+    web_content = local_file.web_content.content
+    timestamp   = timestamp()
+  }
+
   depends_on = [local_file.web_content]
 
   provisioner "local-exec" {
