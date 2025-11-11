@@ -2,22 +2,22 @@ terraform {
   required_providers {
     local = {
       source  = "hashicorp/local"
-      version = "~> 2.5"
+      version = "~> 2.0"
     }
   }
 }
 
 provider "local" {}
 
-# Recurso "ficticio" que simula la creación de infraestructura
-resource "local_file" "infra" {
-  content  = "Infraestructura desplegada con Terraform"
-  filename = "${path.module}/infra.txt"
+# Crea o actualiza el archivo HTML
+resource "local_file" "web_content" {
+  filename = "${path.module}/../app/index.html"
+  content  = "<h1>Hi from Terraform</h1>"
 }
 
-# Ejecuta Ansible automáticamente después de crear el archivo
-resource "null_resource" "configure_with_ansible" {
-  depends_on = [local_file.infra]
+# Ejecuta Ansible después
+resource "null_resource" "run_ansible" {
+  depends_on = [local_file.web_content]
 
   provisioner "local-exec" {
     command = "ansible-playbook -i ../ansible/inventory.ini ../ansible/playbook.yml"
