@@ -1,11 +1,5 @@
-variable "filename" {
-  description = "Name for the file created"
+variable "message" {
+  description = "Mensaje de infraestructura"
   type        = string
-  default     = "saludo.txt"
-}
-
-variable "author" {
-  description = "Creator's name"
-  type        = string
-  default     = "DevOps"
+  default     = "Infraestructura lista"
 }

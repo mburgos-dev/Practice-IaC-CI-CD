@@ -1,0 +1,9 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_ansible
+    ports:
+      - "8080:80"
+    volumes:
+      - ../app:/usr/share/nginx/html
+    restart: always
