@@ -1,0 +1,35 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches: [ develop/actions ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Install Dependencies
+      run: |
+        pip install ansible
+        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+
+    - name: Check installed tools
+      run: |
+        terraform --version
+        ansible --version
+        docker --version
+        docker compose version
+
+    - name: Terraform Init & Apply
+      run: |
+        terraform init
+        terraform apply -auto-approve
+      working-directory: terraform
