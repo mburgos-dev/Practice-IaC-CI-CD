@@ -1,0 +1,48 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches: [ develop/actions ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Paso 1: Descargar el código
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Paso 2: Instalar Terraform
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    # Paso 3: Instalar Python
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    # Paso 4: Instalar Ansible
+    - name: Install Ansible
+      run: |
+        python -m pip install --upgrade pip
+        pip install ansible
+
+    # Paso 5: Instalar Docker
+    - name: Install Docker
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+        sudo systemctl start docker
+        sudo systemctl enable docker
+
+    # Paso 6: Inicializar Terraform
+    - name: Terraform Init
+      run: terraform init
+      working-directory: terraform
+
+    # Paso 7: Aplicar Terraform
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      working-directory: terraform
