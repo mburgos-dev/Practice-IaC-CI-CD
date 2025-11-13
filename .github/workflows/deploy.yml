@@ -2,7 +2,7 @@ name: Deploy Infrastructure
 
 on:
   push:
-    branches: [ develop/actions ]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -15,35 +15,21 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-
-    - name: Install dependencies
+    - name: Install Dependencies
       run: |
-        python -m pip install --upgrade pip
         pip install ansible
         sudo apt-get update
-        sudo apt-get install -y docker.io
+        sudo apt-get install -y docker-compose-plugin
 
-    - name: Terraform Format Check
-      run: terraform fmt -check
-      working-directory: terraform
+    - name: Check installed tools
+      run: |
+        terraform --version
+        ansible --version
+        docker --version
+        docker-compose version
 
-    - name: Terraform Init
-      run: terraform init
-      working-directory: terraform
-
-    - name: Terraform Validate
-      run: terraform validate
-      working-directory: terraform
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
-      working-directory: terraform
-
-    # Paso 7: Aplicar Terraform
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
+    - name: Terraform Init & Apply
+      run: |
+        terraform init
+        terraform apply -auto-approve
       working-directory: terraform
